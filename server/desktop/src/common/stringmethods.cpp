@@ -1,5 +1,3 @@
-#include "stdafx.h"
-#include "../stdafx.h"
 #include "stringmethods.h"
 
 using namespace std;
@@ -87,10 +85,4 @@ size_lt ConvertStringArrayToByte(byte** byteArr, string *str, size_lt cnt)
 	}
 	*byteArr = buf;
 	return countBytes;
-}
-
-void ctow(const char *str, wchar_t *wStr)
-{
-	int len = strlen(str) + 2;
-	mbstowcs(wStr, str, len);
 }

@@ -1,56 +1,38 @@
-#include "stdafx.h"
 #include "thread.h"
 
 Thread::Thread()
 {
-	this->thread = new OSThread;
-	this->runned = false;
-	this->ThreadList.push_back(this);
+	_thread = new OSThread();
+	if (!_thread)
+	{
+		ThrowThreadExceptionWithCode("Can't allocate memory for OS thread!", GetLastError());
+	}
 }
 
 Thread::~Thread()
 {
-	delete this->thread;
-	this->activeThreadsCount--;
+	delete _thread;
 }
 
-bool Thread::Start(void * threadFunc, void * threadFuncArgs)
+int Thread::Start(void *threadFunc, void *threadFuncArgs, void *result)
 {
-	if (this->activeThreadsCount >= this->thread->GetMaxThreadCount())
-	{
-		this->CheckListCompleted();
-		if (this->activeThreadsCount >= this->thread->GetMaxThreadCount())
-		{
-			return false;
-		}
-	}
-
-	this->thread->Init(threadFunc, threadFuncArgs, 0, t_flags::RUNIMMEDIATLY, t_secattr::ENULL);
-	this->thread->Start();
-	this->runned = true;
-	this->activeThreadsCount++;
-
-	return true;
+	_thread->Init(threadFunc, threadFuncArgs, 0, t_flags::RUNIMMEDIATLY, t_secattr::ENULL);
+	_thread->Start();
+	_id = _thread->GetThreadID();
+	return _id;
 }
 
-bool Thread::CheckCompleted()
+void* Thread::GetResult()
 {
-	return (this->runned && !this->thread->CheckActive());
+	return _result;
 }
 
-bool Thread::CheckActive()
+bool Thread::IsCompleted()
 {
-	return (this->runned && this->thread->CheckActive());
+	return !_thread->CheckActive(_result);
 }
 
-void Thread::CheckListCompleted()
+int Thread::GetMaxThreadCount()
 {
-	for (size_t i = 0; i < Thread::ThreadList.size(); i++)
-	{
-		if (!Thread::ThreadList[i]->CheckCompleted())
-		{
-			delete Thread::ThreadList[i];
-			Thread::ThreadList.erase(Thread::ThreadList.begin() + i);
-		}
-	}
+	return OSThread::GetMaxThreadCount();
 }

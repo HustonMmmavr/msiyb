@@ -1,8 +1,5 @@
-#include "stdafx.h"
 #include "main.h"
-#include "common\file.h"
-#include "net\socket.h"
-#define CLIENT
+
 using namespace std;
 
 int main()
@@ -24,7 +21,7 @@ int main()
 
 			size_lt cl = server->RecvAll((char*)arr);
 			File::WriteAllBytes("D:\\3.jpg", arr, cl);
-#else
+#elif SERVER
 			byte* arr;
 			size_lt s = File::ReadAllBytes("D:\\1.jpg", &arr);
 			Socket *server = new Socket(2345, "127.0.0.1");
@@ -35,6 +32,8 @@ int main()
 			client->Recv(tmp, 200);
 			if (!strcmp(tmp, "hello"))
 				size_lt cl = client->SendAll((char*)arr, s);
+#else
+			serverInstance->Start();
 #endif
 			return 0;
 			//serverInstance->Start();
@@ -42,11 +41,20 @@ int main()
 		}
 		catch (Exception &error)
 		{
-			FileException *f = (FileException*)&error;
-			printf("%s\n %s", f->what(), ParseException(f->GetErrorCode()));
+			printf("%s",error.what());
 			failCount++;
+			if (failCount < 5)
+			{
+				printf("\nTrying to restart...\n\n");
+			}
+			else
+			{
+				printf("\nWell, sorry something went wrong. We can not start server.\n");
+			}
+			//FileException *f = (FileException*)&error;
+			//printf("%s\n %s", f->what(), ParseException(f->GetErrorCode()));
 		}
 	}
-
+	system("pause");
 	return 1;
 }

@@ -1,9 +1,9 @@
 /*!
 \file thread.h "server\desktop\src\common\thread.h"
-\authors Alexandr Barulev, Dmitry Zaitsev
+\authors Dmitry Zaitsev
 \copyright © MSiYB 2017
 \license GPL license
-\version 0.1
+\version 2.0
 \date 02 March 2017
 */
 
@@ -17,31 +17,23 @@ typedef WinThread OSThread;
 typedef UnixThread OSThread;
 #endif
 
-using namespace std;
-
 /*!
 \class Thread thread.h "server\desktop\src\common\thread.h"
 \brief  Thread interface.
-Provide interface to common thread structure and it's action.
+Provide interface to single thread structure and it's action.
 Factory for unix/bsd/windows structure of thread.
 */
 class Thread
 {
 public:
-	static int activeThreadsCount;		///< Amount of current active threads
-	static vector<Thread*> ThreadList;	///< List of current thread objects
-
-	bool runned;	///< TRUE if we started thread; false if not yet
 
 	/*!
 	Initialises OS depended thread structure.
-	Add self in ThreadList
 	*/
 	Thread();
 
 	/*!
 	Dealocates memory of OS depended object.
-	Decrease active threads count
 	*/
 	~Thread();
 
@@ -50,30 +42,28 @@ public:
 	equal to max thread count, looks for completed threads and tried one more time.
 	\param[in] threadFunc Pointer to a function to be executed by the thread.
 	\param[in] threadFuncArgs A pointer to a variable to be passed to the thread.
-	\return TRUE if new thread started, NO in other case.
+	\param[out] result Value returned from thread function.
+	\return Thread ID if new thread started.
 	*/
-	bool Start(void* threadFunc, void* threadFuncArgs);
+	int Start(void *threadFunc, void *threadFuncArgs, void *result = nullptr);
+
+	void* GetResult();
 
 	/*!
-	Checks if current thread started and completed it's work
+	Checks if thread completed it's work
+	\param[in] threadID Id if thread to check.
 	\return TRUE if completed, FALSE in other case
 	*/
-	bool CheckCompleted();
+	bool IsCompleted();
 
 	/*!
-	Checks if current thread started and not completed it's work yet
-	\return TRUE if still active, FALSE in other case
+	Returns maximum amount of threads can be launched. Static.
+	\return Maximum amount of threads can be launched.
 	*/
-	bool CheckActive();
-
-	/*!
-	Looks for completed threads in threads list and free them.
-	*/
-	static void CheckListCompleted();
+	static int GetMaxThreadCount();
 
 private:
-	IThread* thread;	///< OS depended thread structure
+	int _id;				///< Current thread ID.
+	void *_result;			///< Value returned from thread function.
+	OSThread *_thread;		///< OS depended thread structure.
 };
-
-int Thread::activeThreadsCount = 0;
-vector<Thread*> Thread::ThreadList;

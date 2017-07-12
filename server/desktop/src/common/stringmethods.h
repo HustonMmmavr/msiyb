@@ -8,8 +8,11 @@
 */
 
 #pragma once
+#include "../defines.h"
+#include "../tools/exception.h"
+#include <string>
 
-using namespace std;
+using std::string;
 
 /*!
 Realocates memory for char string array
@@ -52,10 +55,3 @@ Convert array of strings into byte array
 \return Amount of bytes in byte array
 */
 size_lt ConvertStringArrayToByte(byte** byteArr, string *str, size_lt cnt);
-
-/*!
-Convert char string into wchar.
-\param[in] str Char string.
-\param[out] wStr Wchar string.
-*/
-void ctow(const char *str, wchar_t *wStr);

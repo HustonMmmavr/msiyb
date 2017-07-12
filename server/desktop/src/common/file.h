@@ -8,13 +8,14 @@
 */
 
 #pragma once
+#include <string>
 
 #ifdef _WIN32
 #include "../cross/windows/winfile.h"
 typedef WinFile OSFile;
 #elif _unix_
 typedef UnixFile OSFile;
-#include "../cross/unix/fileimpl.h"
+#include "../cross/unix/unixfile.h"
 #endif
 
 using namespace std;
@@ -27,13 +28,20 @@ Factory for unix/bsd/windows structure of file
 */
 class File
 {
+	/// \todo File(const File &file); operator = (); GetInfo();
+
 public:
+	/*!
+	Initialises cache buffers and OS depended file structure.
+	*/
+	File();
+
 	/*!
 	Initialises cache buffers and OS depended file structure.
 	\param[in] fileName Name of file to work with.
 	\param[in] bufferSize Maximum size of cache buffer.
 	*/
-	File(const char* fileName = nullptr, size_lt bufferSize = FILE_BUFFER_SIZE);
+	File(const char* fileName, size_lt bufferSize = FILE_BUFFER_SIZE);
 
 	/*!
 	Dealocates memory of cache buffers and OS depended file structure.
@@ -42,14 +50,16 @@ public:
 
 	/*!
 	Opens file in predetermined mode.
+	\param[in] fileName Name of file to work with.
+	\param[in] mode Mode to open file (list of possibles modes defined in ifile.h).
+	*/
+	void Open(const char *fileName, FileOpenMode mode);
+
+	/*!
+	Opens file in predetermined mode.
 	\param[in] mode Mode to open file (list of possibles modes defined in ifile.h).
 	*/
 	void Open(FileOpenMode mode);
-	
-	// TODO
-	// void Open(const char* fileName, FileOpenMode mode);
-	// File(const File &file)
-	// operator = ()
 
 	/*!
 	Flushes bytes from cache buffer to write into file.
@@ -129,7 +139,7 @@ public:
 	size_lt ReadBlock(byte *block, size_lt sizeBlock);
 
 	/*!
-	Saves one byte in cache. 
+	Saves one byte in cache.
 	Will be writed in file after cache fills or after Flush method called.
 	Clears cache of readed bytes.
 	\param[in] b Byte to save.
@@ -172,8 +182,8 @@ public:
 
 
 
-	  /////////////////////////////////////////////////////////////////////////////
-	 ////////////////////           STATIC METHODS            ////////////////////
+	/////////////////////////////////////////////////////////////////////////////
+	////////////////////           STATIC METHODS            ////////////////////
 	/////////////////////////////////////////////////////////////////////////////
 
 	/*!
@@ -217,17 +227,17 @@ public:
 	\param[in] size Size of data buffer.
 	\param[in] mode Open file mode.
 	*/
-	static void WriteAllBytes(const char *fileName, byte* data, size_lt size, FileOpenMode mode = WRITEONEXISTS);
-	
+	static void WriteAllBytes(const char *fileName, byte* data, size_lt size, FileOpenMode mode = WRITENEWFILE);
+
 	/*!
 	Open file and write all data (in char string format) in it. Static.
 	\param[in] string fileName Name of file to read.
 	\param[in] charStrings Strings to write in file.
 	\param[in] countStrings Amount of strings to write.
 	\param[in] mode Open file mode.
-	*/ 
-	static void WriteAllCharStrings(const char *fileName, char** charStrings, size_lt countStrings, FileOpenMode mode = WRITEONEXISTS);
-	
+	*/
+	static void WriteAllCharStrings(const char *fileName, char** charStrings, size_lt countStrings, FileOpenMode mode = WRITENEWFILE);
+
 	/*!
 	Open file and write all data (in string format) in it. Static.
 	\param[in] string fileName Name of file to read.
@@ -235,8 +245,8 @@ public:
 	\param[in] countStrings Amount of strings to write.
 	\param[in] mode Open file mode.
 	*/
-	static void WriteAllStrings(const char *fileName, string *strings, size_lt countStrings, FileOpenMode mode = WRITEONEXISTS);
-
+	static void WriteAllStrings(const char *fileName, string *strings, size_lt countStrings, FileOpenMode mode = WRITENEWFILE);
+	
 	/*!
 	\TODO
 	Get last modified file. Static.
@@ -246,19 +256,19 @@ public:
 	static FileMeta LastModified(const char *fileName);
 
 private:
-	IFile *file;					///< OS depended file structure 
+	IFile *_file;					///< OS depended file structure 
 
-	char fileName[MAX_PATH];		///< Path to a file (including it's name)
-	bool opened;					///< Descriptor opening status
+	char *_fileName;				///< Path to a file (including it's name)
+	bool _opened;					///< Descriptor opening status
 
-	size_lt bufferSize;				///< Determine size of cache buffer
+	size_lt _bufferSize;			///< Determine size of cache buffer
 
-	byte *cacheReaded;				///< Cache of bytes were readed from file
-	size_lt posInCacheReaded;		///< Pointer to a position in cache of readed bytes
-	size_lt bytesInCacheReaded;		///< Amount of bytes left in cache of readed bytes
+	byte *_cacheReaded;				///< Cache of bytes were readed from file
+	size_lt _posInCacheReaded;		///< Pointer to a position in cache of readed bytes
+	size_lt _bytesInCacheReaded;	///< Amount of bytes left in cache of readed bytes
 
-	byte *cacheToWrite;				///< Cache of bytes are ready to be writen in file
-	size_lt posInCacheToWrite;		///< Pointer to a position in cache of bytes to write in file
-	size_lt bytesInCacheToWrite;	///< Amount of bytes left in cache of bytes to write in file
+	byte *_cacheToWrite;			///< Cache of bytes are ready to be writen in file
+	size_lt _posInCacheToWrite;		///< Pointer to a position in cache of bytes to write in file
+	size_lt _bytesInCacheToWrite;	///< Amount of bytes left in cache of bytes to write in file
 
 };

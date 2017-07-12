@@ -1,20 +1,16 @@
 /*!
 \file ithread.h "server\desktop\src\cross\ithread.h"
-\authors Alexandr Barulev, Dmitry Zaitsev
+\authors Dmitry Zaitsev
 \copyright © MSiYB 2017
 \license GPL license
-\version 0.1
+\version 1.0
 \date 02 March 2017
 */
 
 #pragma once
-#include "../tools/exceptions/thredexception.h"
-
-/// Security attributes
-typedef enum
-{
-	ENULL	///< The object is assigned the default security descriptor
-} t_secattr;
+#include "../defines.h"
+#include "threadsecurity.h"
+#include "../tools/exceptions/threadexception.h"
 
 /// The flags that control the creation of the thread.
 typedef enum
@@ -32,13 +28,6 @@ Defined methods for threads should be realized in OS depended classes
 class IThread
 {
 public:
-	int maxThreadsCount;	///< Amount of threads can be launched (logical proc)
-	
-	/*!
-	Returns maximum amount of threads can be launched
-	\return Maximum amount of threads can be launched
-	*/
-	virtual int GetMaxThreadCount() = 0;
 
 	/*!
 	Set up thread before launch
@@ -52,18 +41,21 @@ public:
 	
 	/*!
 	Launch thread with setted parameters.
+	\param[in] threadID ID of thread to launch.
 	*/
 	virtual void Start() = 0;
 
 	/*!
-	Returns launched thread ID
-	\return Launched thread ID
+	Returns launched thread system ID.
+	\param[in] Local thread ID.
+	\return Launched thread system ID.
 	*/
 	virtual long GetThreadID() = 0;
 
 	/*!
 	Check if thread comleted his work.
+	\param[out] result Value returned from thread function.
 	\return TRUE if still active and FASLE in other case
 	*/
-	virtual bool CheckActive() = 0;
+	virtual bool CheckActive(void *result = nullptr) = 0;
 };
