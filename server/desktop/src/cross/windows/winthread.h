@@ -10,7 +10,7 @@
 #pragma once
 
 #include "../ithread.h"
-#include "windows.h"
+#include <windows.h>
 
 /*!
 \class WinThread winthread.h "server\desktop\src\cross\windows\winthread.h"
@@ -89,5 +89,4 @@ private:
 
 	DWORD _threadSystemID;		///< Launched threadID
 	LPDWORD _exitCode;			///< Recive the thread termination status
-
 };

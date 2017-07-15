@@ -126,6 +126,15 @@
     <ClInclude Include="cross\windows\threadlock\winsrwlock.h">
       <Filter>Заголовочные файлы\cross\windows\threadlock</Filter>
     </ClInclude>
+    <ClInclude Include="common\threadpool.h">
+      <Filter>Заголовочные файлы\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\allocator.h">
+      <Filter>Заголовочные файлы\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\array.h">
+      <Filter>Заголовочные файлы\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">

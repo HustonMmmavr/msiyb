@@ -35,6 +35,8 @@ File::File()
 	}
 }
 
+
+
 File::File(const char* fileName, size_lt bufferSize)
 {
 	_fileName = new char[MAX_PATH];

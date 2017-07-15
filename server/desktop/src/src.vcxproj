@@ -145,11 +145,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="common\allocator.h" />
+    <ClInclude Include="common\array.h" />
     <ClInclude Include="common\dir.h" />
     <ClInclude Include="common\file.h" />
     <ClInclude Include="common\locker.h" />
     <ClInclude Include="common\stringmethods.h" />
     <ClInclude Include="common\thread.h" />
+    <ClInclude Include="common\threadpool.h" />
     <ClInclude Include="cross\ifile.h" />
     <ClInclude Include="cross\ilocker.h" />
     <ClInclude Include="cross\isocket.h" />
