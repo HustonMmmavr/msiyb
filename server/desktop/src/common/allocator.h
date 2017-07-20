@@ -1,31 +1,82 @@
 #pragma once
-#include "exception.h" 
-typedef long sizeT;
+/*!
+\file locker.h "server\desktop\src\common\allocator.h"
+\authors I}{TI@NDR }{YEV
+\copyright © MSiYB 2017
+\license GPL license
+\version 1.0
+\date 20 July 2017
+*/
+
+#include "../tools/exceptions/allocatorexception.h"
+
 template <typename T>
-#define MEMORY_STEP 2
-typedef long sizeT;
-template <typename T>
-#define MEMORY_STEP 2
 class Allocator
 {
-	T* ptr;
-	size_t allocatedSize;
-	size_t elementsInBuffer;
 public:
+	
+	/* Initializes buffer to null and counters to 0 */
 	Allocator();
-	Allocator(size_t allocatedSize);
-	Allocator(const Allocator& arr);
-	Allocator(Allocator &&allocator);
+	
+	/* Initialize buffer with given size
+	\param[in] sizToAlloc Size needed to allocate 
+	*/
+	Allocator(size_t sizeToAlloc);
+	
+	/* Copy constructor (copy data from given allocator to new)
+	\param[in] other Allocator which data will be copied to new object 
+	*/
+	Allocator(const Allocator& other);
+	
+	/* Move constructor (move data from given allocator to new)
+	\param[in] other Allocator which data will be moved to new object
+	*/
+	Allocator(Allocator &&other);
+
+	/* Deletes all data storaged in object */
 	~Allocator();
-	const T& AtIndex(size_t i) const;
-	T& AtIndex(size_t i);
+
+	/* Returns const reference of element storeged at given position
+	\param[in] index Position of element in buffe
+	*/
+	const T& AtIndex(size_t index) const;
+	
+	/* Returns const reference of element storeged in buffer at given position
+	\param[in] index 
+	*/
+	T& AtIndex(size_t index);
+	
+	/* Returns const pointer to btion
+*/
 	const T* GetPointer() const;
+	
+	/* Returns t pointer to buffe *
 	T* GetPointer();
-	void PushBack(const T& data);
+	
+	/* Returns const reference of element storeged at given position
+	\param[in] ind
+	*/
+	void PushBack(const T &data);
+	
+	/* Returns const reference of element storeged at given position
+	\param[in] ind
+	*/
 	void Resize();
+	
+	/* Returns const reference of element storeged at given position
+	\param[in] ind
+	*/
 	size_t Count();
+	
+	
 	size_t Allocated();
-	Allocator& operator = (const Allocator&);
+
+
+	Allocator& operator = (const Allocator &other);
+private:
+	T* pBuffer;						///< Pointer to linea buffer 
+	size_t allocatedSize;			///< Size of allocated buffer
+	size_t elementsInBuffer;		///< Count of elements storaged in buffer
 };
 
 
@@ -33,15 +84,15 @@ template <typename T>
 Allocator<T>::Allocator()
 {
 	allocatedSize = 0;
-	ptr = NULL;
+	pBuffer = NULL;
 	elementsInBuffer = 0;
 }
 
 template <typename T>
 Allocator<T>::Allocator(const Allocator<T>& arr)
 {
-	ptr = NULL;
-	*this = arr;
+	pBuffer = NULL;	// Set b=pointer to buffer to NULL, because of correc delet in operator =
+	*this = arr;	// operator = is peregruge
 }
 
 template <typename T>
@@ -50,14 +101,13 @@ Allocator<T>::Allocator(size_t sizeToAlloc)
 	allocatedSize = sizeToAlloc;
 	if (allocatedSize == 0)
 	{
-		ptr = NULL;
+		pBuffer = NULL;
 	}
 	else
 	{
-		ptr = new T[allocatedSize];
-
-		if (!ptr)
-			ThrowException("cant allocate");
+		pBuffer = new T[allocatedSize];
+		if (!pBuffer)
+			ThrowAllocatorException("Cant allocate buf");
 	}
 	elementsInBuffer = 0;
 }
@@ -65,16 +115,16 @@ Allocator<T>::Allocator(size_t sizeToAlloc)
 template <typename T>
 Allocator<T>::Allocator(Allocator<T> &&allocator)
 {
-	ptr = allocator.ptr;
+	pBuffer = allocator.pBuffer;
 	allocatedSize = allocator.allocatedSize;
 	elementsInBuffer = allocator.elementsInBuffer;
-	allocator.ptr = NULL;
+	allocator.pBuffer = NULL;
 }
 
 template <typename T>
 Allocator<T>::~Allocator()
 {
-	delete[] ptr;
+	delete[] pBuffer;
 }
 
 template <typename T>
@@ -82,7 +132,7 @@ void Allocator<T>::PushBack(const T& data)
 {
 	if (elementsInBuffer == allocatedSize)
 		Resize();
-	ptr[elementsInBuffer++] = data;
+	pBuffer[elementsInBuffer++] = data;
 }
 
 template <typename T>
@@ -91,43 +141,43 @@ void Allocator<T>::Resize()
 	if (allocatedSize == 0)
 	{
 		allocatedSize = 1;
-		ptr = new T[allocatedSize];
-		if (!ptr) ThrowException("err");
+		pBuffer = new T[allocatedSize];
+		if (!pBuffer) ThrowException("err");
 		return;
 	}
 	sizeT newSize = allocatedSize * MEMORY_STEP;
-	T *oldPtr = ptr;
-	T *newPtr = new T[newSize];
-	if (!newPtr) ThrowException("Cant reallcate");
+	T *oldpBuffer = pBuffer;
+	T *newpBuffer = new T[newSize];
+	if (!newpBuffer) ThrowException("Cant reallcate");
 	for (int i = 0; i < allocatedSize; i++)
-		newPtr[i] = oldPtr[i];
-	delete[] oldPtr;
-	ptr = newPtr;
+		newpBuffer[i] = oldpBuffer[i];
+	delete[] oldpBuffer;
+	pBuffer = newpBuffer;
 	allocatedSize *= MEMORY_STEP;
 }
 
 template <typename T>
 T *Allocator<T>::GetPointer()
 {
-	return ptr;
+	return pBuffer;
 }
 
 template <typename T>
 const T* Allocator<T>::GetPointer() const
 {
-	return ptr;
+	return pBuffer;
 }
 
 template <typename T>
-T& Allocator<T>::AtIndex(size_t i)
+T& Allocator<T>::AtIndex(size_t index)
 {
-	return ptr[i];
+	return pBuffer[index];
 }
 
 template <typename T>
-const T& Allocator<T>::AtIndex(size_t i) const
+const T& Allocator<T>::AtIndex(size_t index) const
 {
-	return ptr[i];
+	return pBuffer[i];
 }
 
 template <typename T>
@@ -146,17 +196,23 @@ size_t Allocator<T>::Allocated()
 template <typename T>
 Allocator<T>& Allocator<T>::operator = (const Allocator<T>& arr)
 {
-	delete[] ptr;
+	delete[] pBuffer;	// we need to delete old data 
 	allocatedSize = arr.allocatedSize;
 	elementsInBuffer = arr.elementsInBuffer;
+	
+	// if given allocator was empty we need to check it, else will be error in new T[0]
 	if (allocatedSize == 0)
 	{
-		ptr = NULL;
+		pBuffer = NULL;
 		return *this;
 	}
-	ptr = new T[allocatedSize];
-	if (!ptr) ThrowException("Cant alloc");
+
+	pBuffer = new T[allocatedSize];
+	if (!pBuffer) ThrowException("Cant alloc");
+
+	// Copy all given data (we cant use memcpy if elements is objects)
 	for (int i = 0; i < elementsInBuffer; i++)
-		ptr[i] = arr.ptr[i];
+		pBuffer[i] = arr.pBuffer[i];
+
 	return *this;
 }
