@@ -85,78 +85,78 @@ class Array
 {
 public:
 	
-	/* Initialize allocator object */
+	/*! Initialize allocator object */
 	Array();
 	
-	/* Initialize allocator object with given size 
+	/*! Initialize allocator object with given size 
 	\param[in] sizeToAlloc Size needed to initialize allocator  
 	*/
 	Array(size_t sizeToAlloc);
 	
-	/* Copy constructor (copy data from given array to new)
+	/*! Copy constructor (copy data from given array to new)
 	\param [in] other Array, which data will be copied to new array
 	*/
 	Array(const Array& other);
 	
-	/* Move constructor (move data from given array to new) 
+	/*! Move constructor (move data from given array to new) 
 	\param[in] other Array which data will be moved to new array
 	*/
 	Array(Array &&other);
 	
-	/* Deletes allocator */
+	/*! Deletes allocator */
 	~Array();
 	
-	/* Push element to the end of array 
+	/*! Push element to the end of array 
 	\param[in] data Reference to data which will be added at the end of array
 	*/
 	void PushBack(const T& data);
 	
-	/* Returns count of elements storaged in array */
+	/*! Returns count of elements storaged in array */
 	size_t Count() const;
 	
-	/* Returns size of allocated buffer in memory */
+	/*! Returns size of allocated buffer in memory */
 	size_t Allocated() const;
 	
-	/* Returns C-style pointer to begin of array */
+	/*! Returns C-style pointer to begin of array */
 	T* GetPointer();
 
-	/* Retuens C-style const pointer to begin of array */
+	/*! Retuens C-style const pointer to begin of array */
 	const T* GetPointer() const;
 
-	/* Operator = which copy all data to this array
+	/*! Operator = which copy all data to this array
 	\ param[in] other Array, which data will be copied to this array
 	*/
 	Array& operator = (const Array& other);
 
-	/* operator = which move all data to this array
+	/*! operator = which move all data to this array
 	\param [in] other Array, which data will be moved to this array
 	*/
 	Array& operator = (Array &&other);
 	
-	/* Returns const reference for element of array at given positi
+	/*! Returns const reference for element of array at given positi
 	\param[in] index Position of element in array 
 	*/
 	const T& operator[] (size_t i) const;
 
-	/* Returns reference for element of array at given position 
+	/*! Returns reference for element of array at given position 
 	\param[in] index Position of element in array
 	*/
 	T& operator[] (size_t index);
 	
-	/* Returns const referens for element of array at given position
+	/*! Returns const referens for element of array at given position
 	\param [in] index Position of element in array
 	*/
 	const T& AtIndex(size_t index) const;
 	
-	/* Retrurns reference for element of array at given position
+	/*! Retrurns reference for element of array at given position
 	\param[in] index Position of element in arra
 	*/
 	T& AtIndex(size_t index);
 
-	/* i forget what it need to do, but i have to remember */
+	/*! i forget what it need to do, but i have to remember */
 	void IndexOf();
 	
-	/* Sorts array. Sorting depens on comparator.
+	/*! Sorts array. Sorting depens on comparator.
 	\param[in] comparator Rule to compare objects in array.
 	If comparator not sended, function uses default compar.
 	*/

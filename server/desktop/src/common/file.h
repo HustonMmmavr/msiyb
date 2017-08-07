@@ -18,6 +18,7 @@ typedef UnixFile OSFile;
 #include "../cross/unix/unixfile.h"
 #endif
 
+
 using namespace std;
 
 /*!
@@ -29,7 +30,6 @@ Factory for unix/bsd/windows structure of file
 class File
 {
 	/// \todo File(const File &file); operator = (); GetInfo();
-
 public:
 	/*!
 	Initialises cache buffers and OS depended file structure.
